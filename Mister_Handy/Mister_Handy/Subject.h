@@ -15,6 +15,7 @@ private:
 	short unsigned int Message_key;
 	short unsigned int Theory_priority;
 	short unsigned int Practice_priority;
+	short unsigned int time_spent;
 	float time_coef; /// minutes per sub-amount
 	short int days_after_lstus;
 	float prior_coef;

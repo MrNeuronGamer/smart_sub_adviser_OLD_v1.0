@@ -17,7 +17,7 @@ private:
 public:
 	Data_Manager();
 	void create_new_subj(std::string name, float priority, bool prac_falg );
-
+	void show_subjs();
 
 	~Data_Manager();
 };

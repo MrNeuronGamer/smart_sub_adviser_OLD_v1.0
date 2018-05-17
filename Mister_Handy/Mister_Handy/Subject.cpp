@@ -23,7 +23,7 @@ Subject::Subject(std::string  name, float priority, bool prac_flag)
 	Practice_priority = 0;
 	time_coef = 45;
 	days_after_lstus = 0;
-	
+	time_spent = 0;
 }
 
 

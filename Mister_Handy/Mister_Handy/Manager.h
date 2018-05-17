@@ -5,6 +5,8 @@
 
 class Manager
 {
+private:
+	void get_path(char* pPath);
 protected:
 	char path[MAX_BUF_SIZE];	
 
@@ -12,7 +14,7 @@ protected:
 public:
 	Manager();
 	Manager(char* pPath);
-	void get_path(char* pPath);
+	
 	
 	virtual void launch();
 
