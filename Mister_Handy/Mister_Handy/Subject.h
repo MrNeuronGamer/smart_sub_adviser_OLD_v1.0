@@ -32,6 +32,7 @@ public:
 	friend std::ofstream& operator<< (std::ofstream& alt, class Subject Swaper);
 	float prct_eff();
 	float thry_eff();
+	
 
 	friend class Data_Manager;
 	~Subject();

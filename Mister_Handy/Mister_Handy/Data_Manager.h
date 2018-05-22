@@ -24,6 +24,7 @@ private:
 	void refresh_priority();
 	void save_database();
 	int determine_day();
+	void assign_tasks();
 	
 
 	
@@ -41,7 +42,7 @@ public:
 	void reset_subjs();
 	void print_plan();
 	void set_day_subjects_amount(int amount_of_theory, int amount_of_practice);
-
+	void stop();
 	~Data_Manager();
 };
 

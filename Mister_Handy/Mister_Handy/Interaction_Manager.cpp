@@ -18,24 +18,17 @@ void Interaction_Manager::launch()
 	// determines the path where data located in
 	
 	Data.launch();
-
-	while (true)
-	{
-		this->get_command();
-	}
-
+	
+	this->get_command();
+	
+	Data.stop();
 
 
 }
 
 void Interaction_Manager::get_command()
 {
-	this->print_commands();
-	std::cout << std::endl << std::endl;
-
-	std::cout << " What would you like to do next? \n";
-
-	
+		
 	
 	int command = 0;
 	
@@ -58,7 +51,7 @@ void Interaction_Manager::get_command()
 
 			}
 
-			if (command > 6) { }
+			if (command <= 6) { }
 			else
 			{
 				std::cout << "Wrong command, please, try again:\n\n";
@@ -98,7 +91,7 @@ void Interaction_Manager::get_command()
 			case 3:
 				std::cout <<"It's splendid!!! Give me some info about it, buddy:\n\t What is that ? ->  ";
 				
-				std::getline(std::cin, Name);
+				std::cin >> Name;
 				std::cout << "Ok! Great choice. It is going to be very useful!!\n Well, tell me how important this subject is and " <<
 					"if there is some prictice for it? correspondingly pls (o_O)\n\n  ";
 				float prir;
@@ -115,7 +108,7 @@ void Interaction_Manager::get_command()
 
 			case 5:
 				Data.print_plan();
-				std::cout << "\n\nThat's DONE! :)  Everything is set to default.\n\n";
+				std::cout << "\n\nThat's DONE! :) .\n\n";
 				break;
 
 			case 6:

@@ -2,6 +2,7 @@
 #include "Manager.h"
 
 #include "Media_Manager.h"
+#include "Interaction_Manager.h"
 
 #include <windows.h>
 #pragma comment(lib, "winmm.lib")
@@ -58,9 +59,13 @@ void Manager::launch()
 
 		}
 
+		if (omp_get_thread_num() == 1)
+		{
+			Interaction_Manager Suzi(path);
+			Suzi.launch();
+		}
 
-
-
+#pragma omp barrier
 	}
 
 

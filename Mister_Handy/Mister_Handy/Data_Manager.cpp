@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <algorithm>
 
 
 
@@ -63,6 +64,78 @@ void Data_Manager::load_database()
 	}
 
 	IN.close();
+
+}
+
+void Data_Manager::form_day_pull()
+{
+	short int used_s = 0;
+	bool first = true;
+	int target = 0;
+
+	for (int a = 0; a < nt; a++)
+	{
+		first = true;
+		if (used_s == subj_pull.size()) break;
+
+		for (Subject i : subj_pull)
+		{
+
+			if (std::find(std::begin(ch_sub_v), std::end(ch_sub_v), i.subj_key - 1) != std::end(ch_sub_v)) continue;
+
+			if (first)
+			{
+				target = i.subj_key - 1;
+				first = false;
+				continue;
+
+			}
+
+			if (subj_pull[target].Theory_priority < i.Theory_priority) target = i.subj_key - 1;
+
+
+
+		}
+
+		ch_sub_v.push_back(target);
+		used_s++;
+
+	}
+
+	used_s = 0;
+
+	for (int a = nt; a <np + nt; a++)
+	{
+		first = true;
+		if (used_s == subj_pull.size()) break;
+
+		for (Subject i : subj_pull)
+		{
+
+			if (std::find(std::begin(ch_sub_v) + nt, std::end(ch_sub_v), i.subj_key - 1) != std::end(ch_sub_v)) continue;
+
+			if (first)
+			{
+				target = i.subj_key - 1;
+				first = false;
+				continue;
+
+			}
+
+			if (subj_pull[target].Practice_priority< i.Practice_priority) target = i.subj_key - 1;
+
+
+
+		}
+
+		ch_sub_v.push_back(target);
+		used_s++;
+
+	}
+
+
+
+
 
 }
 
@@ -160,6 +233,33 @@ int Data_Manager::determine_day()
 	
 }
 
+void Data_Manager::assign_tasks()
+{
+
+	for (int a = 0; a < nt; a++)
+	{
+
+		subj_pull[a].assigned_th = subj_pull[a].Week_amount_theor / (7 - current_day);
+
+
+	}
+
+
+	for (int a = nt; a < np + nt; a++)
+	{
+
+		subj_pull[a].assigned_pr = subj_pull[a].Week_amount_pract / (7 - current_day);
+
+		if (!subj_pull[a].Prac_flag)
+		{
+			subj_pull[a].assigned_pr = 0;
+		}
+
+	}
+
+
+}
+
 Data_Manager::Data_Manager()
 {
 	std::cout << "CRITICAL ERROR!!";
@@ -168,6 +268,8 @@ Data_Manager::Data_Manager()
 
 Data_Manager::Data_Manager(char* Path) : Manager(Path)
 {
+	nt = 2;
+	np = 2;
 
 }
 
@@ -178,7 +280,21 @@ void Data_Manager::launch()
 		strcat_s(path, MAX_BUF_SIZE, buffer);
 	}
 
+	this->load_database();
 
+	if (this->determine_day() != current_day)
+	{
+		this->refresh_times();
+		this->refresh_priority();
+		this->form_day_pull();
+		this->assign_tasks();
+		current_day = this->determine_day();
+	}
+
+
+
+
+	this->save_database();
 
 
 
@@ -248,16 +364,16 @@ void Data_Manager::print_plan()
 	for ( int i = 0 ; i < nt; i++)
 	{
 
-		file << subj_pull[ch_sub_v[i] - 1].Name << "\n\n" << "You are supposed to study theory in amount of: " << subj_pull[ch_sub_v[i] - 1].assigned_th - subj_pull[ch_sub_v[i] - 1].Done_theor <<
-			"  and your planned time is : " << subj_pull[ch_sub_v[i] - 1].time_coef*subj_pull[ch_sub_v[i] - 1].assigned_th - subj_pull[ch_sub_v[i] - 1].time_spent_th << " min\n\n";
+		file << subj_pull[ch_sub_v[i]].Name << "\n\n" << "You are supposed to study theory in amount of: " << subj_pull[ch_sub_v[i] ].assigned_th - subj_pull[ch_sub_v[i]].Done_theor <<
+			"  and your planned time is : " << subj_pull[ch_sub_v[i] ].time_coef*subj_pull[ch_sub_v[i] ].assigned_th - subj_pull[ch_sub_v[i] ].time_spent_th << " min\n\n";
 
 	}
 
 	for (int i = nt; i < nt + np; i++)
 	{
 
-		file << subj_pull[ch_sub_v[i] - 1].Name << "\n\n" << "You are supposed to do exercises in amount of: " << subj_pull[ch_sub_v[i] - 1].assigned_pr - subj_pull[ch_sub_v[i] - 1].Done_pract <<
-			"  and your planned time is : " << subj_pull[ch_sub_v[i] - 1].time_coef*subj_pull[ch_sub_v[i] - 1].assigned_pr - subj_pull[ch_sub_v[i] - 1].time_spent_pr << " min\n\n";
+		file << subj_pull[ch_sub_v[i] ].Name << "\n\n" << "You are supposed to do exercises in amount of: " << subj_pull[ch_sub_v[i]].assigned_pr - subj_pull[ch_sub_v[i] ].Done_pract <<
+			"  and your planned time is : " << subj_pull[ch_sub_v[i] ].time_coef*subj_pull[ch_sub_v[i]].assigned_pr - subj_pull[ch_sub_v[i] ].time_spent_pr << " min\n\n";
 
 	}
 
@@ -272,6 +388,11 @@ void Data_Manager::set_day_subjects_amount(int amount_of_theory, int amount_of_p
 	np = amount_of_practice;
 	ch_sub_v.resize(nt + np);
 
+}
+
+void Data_Manager::stop()
+{
+	this->save_database();
 }
 
 
