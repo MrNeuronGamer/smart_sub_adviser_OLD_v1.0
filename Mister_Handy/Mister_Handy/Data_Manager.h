@@ -37,12 +37,12 @@ public:
 	void launch();
 	void create_new_subj(std::string name, float priority, bool prac_falg );
 	void show_subjs();
-	void get_sbj_commit(short unsigned int key, short unsigned int d_th, short unsigned int s_t, short unsigned int d_pr, short unsigned int sp_t);
-	void set_week_amt(short unsigned int key, short unsigned int w_th, short unsigned int w_pr);
+	void get_sbj_commit(int key, float d_th, int s_t, float d_pr,  int sp_t);
+	void set_week_amt(int key, float w_th, float w_pr);
 	void reset_subjs();
 	void print_plan();
 	void set_day_subjects_amount(int amount_of_theory, int amount_of_practice);
-	void stop();
+	void save();
 	~Data_Manager();
 };
 

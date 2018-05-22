@@ -7,18 +7,18 @@ class Subject
 {
 private:
 	std::string Name;							/// Subject's name
-	short unsigned int subj_key;				/// index of Subject inside of subjects pull
-	short unsigned int Week_amount_theor;		/// Amount of theory which is supposed to do untill week ends
-	short unsigned int Week_amount_pract;		/// Amount of practice which is supposed to do untill week ends
-	short unsigned int Done_theor;				/// Amount of done theory for last day
-	short unsigned int Done_pract;				/// Amount of done practice for last day
+	int subj_key;					/// index of Subject inside of subjects pull
+	float Week_amount_theor;		/// Amount of theory which is supposed to do untill week ends
+	float Week_amount_pract;		/// Amount of practice which is supposed to do untill week ends
+	float Done_theor;				/// Amount of done theory for last day
+	float Done_pract;				/// Amount of done practice for last day
 	short unsigned int Message_key;				/// Key of message to be shown
-	short unsigned int Theory_priority;			/// Priority of theory
-	short unsigned int Practice_priority;		/// Priority of practice
-	short unsigned int time_spent_th;			/// Amount of spent time for studying theory last day 
-	short unsigned int time_spent_pr;			/// Amount of spent time for doing practice last day 
-	short unsigned int assigned_th;				/// Amount of theory to be assigned for last day				
-	short unsigned int assigned_pr;				/// Amount of theory to be assigned for last day
+	float Theory_priority;			/// Priority of theory
+	float Practice_priority;		/// Priority of practice
+	int time_spent_th;			/// Amount of spent time for studying theory last day 
+	int time_spent_pr;			/// Amount of spent time for doing practice last day 
+	float assigned_th;				/// Amount of theory to be assigned for last day				
+	float assigned_pr;				/// Amount of theory to be assigned for last day
 	float time_coef;							/// Minutes per sub-amount
 	short int days_after_lstus_th;				/// Day when the subject was used last time (theory sense)
 	short int days_after_lstus_pr;				/// Day when the subject was used last time (practice sense)

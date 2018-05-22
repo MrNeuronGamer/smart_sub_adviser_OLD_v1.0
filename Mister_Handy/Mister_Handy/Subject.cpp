@@ -57,7 +57,7 @@ float Subject::prct_eff()
 {
 	float result = 0;
 
-	result = (float)Done_pract / (float)time_spent_pr*time_coef*7.0 / 10 + 3.0 / 10 * (float)Done_pract / (float)assigned_pr;
+	result = Done_pract / (float)time_spent_pr*time_coef*7.0 / 10 + 3.0 / 10 * Done_pract / assigned_pr;
 
 	return result;
 }
@@ -66,7 +66,7 @@ float Subject::thry_eff()
 {
 	float result = 0;
 
-	result = (float)Done_theor / (float)time_spent_th*time_coef*7.0 / 10 + 3.0 / 10 * (float)Done_theor / (float)assigned_th;
+	result = Done_theor / (float)time_spent_th*time_coef*7.0 / 10 + 3.0 / 10 * Done_theor / assigned_th;
 
 	return result;
 }

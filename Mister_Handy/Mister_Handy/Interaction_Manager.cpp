@@ -21,7 +21,7 @@ void Interaction_Manager::launch()
 	
 	this->get_command();
 	
-	Data.stop();
+	Data.save();
 
 
 }
@@ -76,6 +76,7 @@ void Interaction_Manager::get_command()
 				std::cin >> work_arr[0] >> work_arr[1] >> work_arr[2] >> work_arr[3];
 				std::cout << "\n Cool Buddy!! That's done! I'll keep it in mind. Hope you continue working, God bless you!";
 				Data.get_sbj_commit(key, work_arr[0], work_arr[1], work_arr[2], work_arr[3]);
+				Data.save();
 				break;
 
 			case 2:
@@ -86,6 +87,7 @@ void Interaction_Manager::get_command()
 				short unsigned int amou[2];
 				std::cin >> amou[0] >> amou[1];
 				Data.set_week_amt(key, amou[0], amou[1]);
+				Data.save();
 				break;
 
 			case 3:
@@ -99,16 +101,19 @@ void Interaction_Manager::get_command()
 				std::cin >> prir >> alp;
 				Data.create_new_subj(Name, prir, (bool)alp);
 				std::cout << "\n Great!! it's done!! Let's move further!\n\n";
+				Data.save();
 				break;
 
 			case 4:
 				Data.reset_subjs();
 				std::cout << "\n\nThat's DONE! :)  Everything is set to default.\n\n";
+				Data.save();
 				break;
 
 			case 5:
 				Data.print_plan();
 				std::cout << "\n\nThat's DONE! :) .\n\n";
+				Data.save();
 				break;
 
 			case 6:
@@ -117,6 +122,7 @@ void Interaction_Manager::get_command()
 				std::cin >> a >> b;
 				std::cout << "\n\n";
 				Data.set_day_subjects_amount(a, b);
+				Data.save();
 				break;
 			
 

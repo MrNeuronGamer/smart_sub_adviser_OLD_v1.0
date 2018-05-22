@@ -12,10 +12,10 @@
 
 void Data_Manager::refresh_times()
 {
-	for (Subject i : subj_pull)
+	for (int i = 0 ; i < subj_pull.size(); i++)
 	{
-		i.days_after_lstus_pr++;
-		i.days_after_lstus_th++;
+		subj_pull[i].days_after_lstus_pr += 1;
+		subj_pull[i].days_after_lstus_th += 1;
 	}
 
 }
@@ -29,11 +29,15 @@ void Data_Manager::load_database()
 	std::ifstream IN;
 	IN.open((buff + "\\database.dat").c_str());
 	IN >> nt >> np >> current_day >> size_v;
-	ch_sub_v.resize(size_v);
+	ch_sub_v.clear();
+	ch_sub_v.reserve(size_v);
+	subj_pull.clear();
 
 	for (int a = 0; a < size_v; a++)
 	{
-		IN >> ch_sub_v[a];
+		int buf;
+		IN >> buf;
+		ch_sub_v.push_back(buf);
 
 	}
 
@@ -69,6 +73,8 @@ void Data_Manager::load_database()
 
 void Data_Manager::form_day_pull()
 {
+	ch_sub_v.clear();
+	ch_sub_v.reserve(nt + np);
 	short int used_s = 0;
 	bool first = true;
 	int target = 0;
@@ -81,7 +87,7 @@ void Data_Manager::form_day_pull()
 		for (Subject i : subj_pull)
 		{
 
-			if (std::find(std::begin(ch_sub_v), std::end(ch_sub_v), i.subj_key - 1) != std::end(ch_sub_v)) continue;
+			if (std::find(ch_sub_v.begin(), ch_sub_v.end(), (i.subj_key - 1)) != ch_sub_v.end()) continue;
 
 			if (first)
 			{
@@ -144,52 +150,61 @@ void Data_Manager::refresh_priority()
 
 	for (int a = 0; a < nt; a++)
 	{
-		if (subj_pull[a].thry_eff() < 0.80)
+		
+		if (subj_pull[ch_sub_v[a]].thry_eff() < 0.80)
 		{
-			subj_pull[a].time_coef += 10;
+			subj_pull[ch_sub_v[a]].time_coef += 5;
 		}
 
-		if (subj_pull[a].thry_eff() > 1.20)
+		if (subj_pull[ch_sub_v[a]].thry_eff() > 1.20)
 		{
-			subj_pull[a].time_coef -= 10;
+			subj_pull[ch_sub_v[a]].time_coef -= 5;
 		}
 
-		subj_pull[a].Theory_priority = 0;
+		subj_pull[ch_sub_v[a]].Week_amount_theor -= subj_pull[ch_sub_v[a]].Done_theor;
 
-		subj_pull[a].days_after_lstus_th = 0;
+		subj_pull[ch_sub_v[a]].Theory_priority = 0;
+		subj_pull[ch_sub_v[a]].Done_theor = 0;
+		subj_pull[ch_sub_v[a]].time_spent_th = 0;
+
+		subj_pull[ch_sub_v[a]].days_after_lstus_th = 0;
 
 	}
 
-	for (int a = nt; ( a < np + nt) && (subj_pull[a].Prac_flag == true); a++)
+	for (int a = nt; ( a < np + nt) && (subj_pull[ch_sub_v[a]].Prac_flag); a++)
 	{
-		if (subj_pull[a].prct_eff() < 0.80)
+		if (subj_pull[ch_sub_v[a]].prct_eff() < 0.80)
 		{
-			subj_pull[a].Practice_priority *= 0.5;
+			subj_pull[ch_sub_v[a]].Practice_priority *= 0.5;
 		}
 
-		if (subj_pull[a].prct_eff() > 1.20)
+		if (subj_pull[ch_sub_v[a]].prct_eff() > 1.20)
 		{
-			subj_pull[a].Practice_priority = 0;
+			subj_pull[ch_sub_v[a]].Practice_priority = 0;
 		}
 
-		subj_pull[a].Practice_priority *= 0.2;
-		subj_pull[a].days_after_lstus_pr = 0;
+		subj_pull[ch_sub_v[a]].Week_amount_pract -= subj_pull[ch_sub_v[a]].Done_pract;
+
+		subj_pull[ch_sub_v[a]].Practice_priority *= 0.2;
+		subj_pull[ch_sub_v[a]].days_after_lstus_pr = 0;
+		subj_pull[ch_sub_v[a]].Done_pract = 0;
+		subj_pull[ch_sub_v[a]].time_spent_pr = 0;
 
 
 	}
 
-	for (Subject i : subj_pull)
+	for (int i = 0; i < subj_pull.size(); i++)
 	{
 
-		i.Theory_priority += i.days_after_lstus_th*i.prior_coef;
+		subj_pull[i].Theory_priority += subj_pull[i].days_after_lstus_th*subj_pull[i].prior_coef;
 
-		if (i.Prac_flag == true)
+		if (subj_pull[i].Prac_flag == true)
 		{
-			i.Practice_priority += i.days_after_lstus_pr*i.prior_coef;
+			subj_pull[i].Practice_priority += subj_pull[i].days_after_lstus_pr*subj_pull[i].prior_coef;
 		}
 		else
 		{
-			i.Practice_priority = 0;
+			subj_pull[i].Practice_priority = 0;
 		}
 
 	}
@@ -239,7 +254,7 @@ void Data_Manager::assign_tasks()
 	for (int a = 0; a < nt; a++)
 	{
 
-		subj_pull[a].assigned_th = subj_pull[a].Week_amount_theor / (7 - current_day);
+		subj_pull[ch_sub_v[a]].assigned_th = subj_pull[ch_sub_v[a]].Week_amount_theor / (7 - current_day);
 
 
 	}
@@ -248,11 +263,11 @@ void Data_Manager::assign_tasks()
 	for (int a = nt; a < np + nt; a++)
 	{
 
-		subj_pull[a].assigned_pr = subj_pull[a].Week_amount_pract / (7 - current_day);
+		subj_pull[ch_sub_v[a]].assigned_pr = subj_pull[ch_sub_v[a]].Week_amount_pract / (7 - current_day);
 
-		if (!subj_pull[a].Prac_flag)
+		if (!subj_pull[ch_sub_v[a]].Prac_flag)
 		{
-			subj_pull[a].assigned_pr = 0;
+			subj_pull[ch_sub_v[a]].assigned_pr = 0;
 		}
 
 	}
@@ -268,8 +283,7 @@ Data_Manager::Data_Manager()
 
 Data_Manager::Data_Manager(char* Path) : Manager(Path)
 {
-	nt = 2;
-	np = 2;
+	
 
 }
 
@@ -287,8 +301,9 @@ void Data_Manager::launch()
 		this->refresh_times();
 		this->refresh_priority();
 		this->form_day_pull();
-		this->assign_tasks();
 		current_day = this->determine_day();
+		this->assign_tasks();
+		
 	}
 
 
@@ -325,7 +340,7 @@ void Data_Manager::show_subjs()
 
 }
 
-void Data_Manager::get_sbj_commit(short unsigned int key, short unsigned int d_th, short unsigned int s_t, short unsigned int d_pr, short unsigned int sp_t)
+void Data_Manager::get_sbj_commit(int key, float d_th, int s_t, float d_pr,  int sp_t)
 {
 	
 	subj_pull[key-1].Done_theor += d_th;
@@ -337,7 +352,7 @@ void Data_Manager::get_sbj_commit(short unsigned int key, short unsigned int d_t
 		
 }
 
-void Data_Manager::set_week_amt(short unsigned int key, short unsigned int w_th, short unsigned int w_pr)
+void Data_Manager::set_week_amt(int key, float w_th, float w_pr)
 {
 	subj_pull[key - 1].Week_amount_theor = w_th;
 	subj_pull[key - 1].Week_amount_pract = w_pr;
@@ -346,10 +361,10 @@ void Data_Manager::set_week_amt(short unsigned int key, short unsigned int w_th,
 
 void Data_Manager::reset_subjs()
 {
-	for (Subject i : subj_pull)
+	for (int i = 0; i < subj_pull.size(); i++)
 	{
-		Subject Buff(i.Name, i.prior_coef, i.Prac_flag);
-		i = Buff;
+		Subject Buff(subj_pull[i].Name, subj_pull[i].prior_coef, subj_pull[i].Prac_flag);
+		subj_pull[i] = Buff;
 	}
 }
 
@@ -385,12 +400,12 @@ void Data_Manager::print_plan()
 void Data_Manager::set_day_subjects_amount(int amount_of_theory, int amount_of_practice)
 {
 	nt = amount_of_theory;
-	np = amount_of_practice;
-	ch_sub_v.resize(nt + np);
+	np = amount_of_practice;		
+	this->form_day_pull();
 
 }
 
-void Data_Manager::stop()
+void Data_Manager::save()
 {
 	this->save_database();
 }
