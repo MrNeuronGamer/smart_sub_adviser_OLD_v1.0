@@ -7,16 +7,17 @@
 
 Interaction_Manager::Interaction_Manager(char* pPath) : Manager(pPath)
 {
+	Data_Manager A(pPath);
+	Data = A;
+
 }
 
 
 void Interaction_Manager::launch()
 {
 	// determines the path where data located in
-	{
-		char buffer[] = "\\data";
-		strcat_s(path, MAX_BUF_SIZE, buffer);
-	}
+	
+	Data.launch();
 
 	while (true)
 	{
@@ -48,7 +49,7 @@ void Interaction_Manager::get_command()
 
 			std::cout << " What would you like to do next? \n";
 
-			if (std::cin >> command) { ok_flag = true; }
+			if (std::cin >> command) {  }
 			else
 			{
 				std::cout << "Something went wrong, please, try again:\n\n";
@@ -57,7 +58,7 @@ void Interaction_Manager::get_command()
 
 			}
 
-			if (command < 6) { ok_flag = true; }
+			if (command > 6) { }
 			else
 			{
 				std::cout << "Wrong command, please, try again:\n\n";
@@ -91,7 +92,7 @@ void Interaction_Manager::get_command()
 				std::cout << "\n\nGot it!! Write amounts correspondingly:\n";
 				short unsigned int amou[2];
 				std::cin >> amou[0] >> amou[1];
-				Data.set_week_amo(key, amou[0], amou[1]);
+				Data.set_week_amt(key, amou[0], amou[1]);
 				break;
 
 			case 3:
@@ -113,10 +114,21 @@ void Interaction_Manager::get_command()
 				break;
 
 			case 5:
-				Data.refresh_plan();
+				Data.print_plan();
 				std::cout << "\n\nThat's DONE! :)  Everything is set to default.\n\n";
+				break;
+
+			case 6:
+				int a, b;
+				std::cout << "Please, input numbers for theory and practice:\n ";
+				std::cin >> a >> b;
+				std::cout << "\n\n";
+				Data.set_day_subjects_amount(a, b);
+				break;
+			
 
 			case 0:
+				ok_flag = true;
 				break;
 
 			}
@@ -131,7 +143,7 @@ void Interaction_Manager::print_commands()
 {
 
 	std::cout << "Commands: \n\t 1. Update subjects info\n\t 2. Change (Week) theory/practice amount for subject\n\t 3. Add new subject\n\t" <<
-		" 4. Reset all parameters to default \n\t 5. Refresh day plan\n\t 0. Back\n\n";
+		" 4. Reset all parameters to default \n\t 5. Refresh day plan\n\t 6. Set amount of days tasks\n\t 0. Back\n\n";
 
 }
 
