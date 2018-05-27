@@ -364,6 +364,7 @@ void Data_Manager::reset_subjs()
 	for (int i = 0; i < subj_pull.size(); i++)
 	{
 		Subject Buff(subj_pull[i].Name, subj_pull[i].prior_coef, subj_pull[i].Prac_flag);
+		Buff.subj_key = subj_pull[i].subj_key;
 		subj_pull[i] = Buff;
 	}
 }
