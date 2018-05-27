@@ -4,6 +4,9 @@
 #include <string>
 #include <iterator>
 #include <windows.h>
+#include <algorithm>
+#include <random>
+#include <ctime>
 
 Media_Manager::Media_Manager(char* pPath) : Manager(pPath)
 {
@@ -44,6 +47,10 @@ void Media_Manager::launch()
 	}
 
 	// list is filled
+
+	auto reng = std::default_random_engine (std::time(NULL));
+	
+	std::shuffle(std::begin(media_vector) , std::end(media_vector),reng);
 
 	// starts rotating and playing music
 	std::vector<std::string>::iterator iter;
